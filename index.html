@@ -457,7 +457,7 @@ function DocPaymentAuth({ info, sigs, setSig, inits, setInit }) {
         /* Single-select: clicking same type deselects, clicking new type switches */
         , React.createElement('div', { style: { display:"flex", flexWrap:"wrap", gap:10, marginBottom:16 },}
           , ["Visa","MasterCard","AMEX","Discover"].map(t=>(
-            React.createElement(CheckBox, { key: t, label: t, checked: ccType===t, onChange: ()=>{ const v=ccType===t?"":t; setCcType(v); setInit("cc_type",v||"none"); },,} )
+            React.createElement(CheckBox, { key: t, label: t, checked: ccType===t, onChange: ()=>{ const v=ccType===t?"":t; setCcType(v); setInit("cc_type",v||"none"); },} )
           ))
         )
         , React.createElement('div', { style: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 },}
