@@ -1019,12 +1019,24 @@ function App() {
   const [completedDocs, setCompletedDocs] = useState({});
   const [ownerPassword, setOwnerPassword] = useState("");
   const [ownerAuthed, setOwnerAuthed] = useState(false);
-  const [submissions, setSubmissions] = useState(() => {
-    try { const s = localStorage.getItem("dh_submissions"); return s ? JSON.parse(s) : [
-    { id:"d1", name:"Marcus T.", date:"Feb 20, 2026", status:"completed", docsCompleted:12, docsTotal:12 },
-    { id:"d2", name:"Sandra W.", date:"Feb 22, 2026", status:"in_progress", docsCompleted:7, docsTotal:12 },
-  ]; } catch(e) { return []; }
-  });
+ const SHEET_ID = "1-ER4XlNv3oV8nEJoMz7WE4zVy4p2VEreehz4AwamuXg";
+  const [submissions, setSubmissions] = useState([]);
+  useEffect(() => {
+    const cached = localStorage.getItem("dh_submissions");
+    if (cached) { try { setSubmissions(JSON.parse(cached)); } catch(e) {} }
+    fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`)
+      .then(r=>r.text()).then(text=>{
+        const json=JSON.parse(text.replace(/^[^{]*/,"").replace(/[^}]*$/,""));
+        const rows=json.table.rows.map((row,i)=>({
+          id:row.c[0]?.v||`r${i}`, name:row.c[1]?.v||"", date:row.c[2]?.v||"",
+          status:row.c[3]?.v||"in_progress", docsCompleted:Number(row.c[4]?.v)||0,
+          docsTotal:Number(row.c[5]?.v)||12, email:row.c[6]?.v||"",
+          phone:row.c[7]?.v||"", address:row.c[8]?.v||"",
+        }));
+        setSubmissions(rows);
+        localStorage.setItem("dh_submissions",JSON.stringify(rows));
+      }).catch(e=>console.error("Sheet fetch failed:",e));
+  }, []);
   const toggleStatus = (id) => {
     setSubmissions(prev => {
       const updated = prev.map(s => s.id === id ? {...s, status: s.status === "completed" ? "in_progress" : "completed"} : s);
