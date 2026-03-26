@@ -1019,10 +1019,19 @@ function App() {
   const [completedDocs, setCompletedDocs] = useState({});
   const [ownerPassword, setOwnerPassword] = useState("");
   const [ownerAuthed, setOwnerAuthed] = useState(false);
-  const [submissions] = useState([
+  const [submissions, setSubmissions] = useState(() => {
+    try { const s = localStorage.getItem("dh_submissions"); return s ? JSON.parse(s) : [
     { id:"d1", name:"Marcus T.", date:"Feb 20, 2026", status:"completed", docsCompleted:12, docsTotal:12 },
     { id:"d2", name:"Sandra W.", date:"Feb 22, 2026", status:"in_progress", docsCompleted:7, docsTotal:12 },
-  ]);
+  ]; } catch(e) { return []; }
+  });
+  const toggleStatus = (id) => {
+    setSubmissions(prev => {
+      const updated = prev.map(s => s.id === id ? {...s, status: s.status === "completed" ? "in_progress" : "completed"} : s);
+      localStorage.setItem("dh_submissions", JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const DOCUMENTS = getDocuments(includeLease, includePG);
   const updateInfo = (k,v) => setClientInfo(p=>({...p,[k]:v}));
@@ -1043,7 +1052,7 @@ function App() {
     React.createElement('div', { style: { minHeight:"100vh", background:"#f5f0e8", fontFamily:"Crimson Text,serif" },}
       , React.createElement('div', { style: { background:C.black, padding:"14px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" },}
         , React.createElement('div', { onClick: ()=>{ setView("landing"); setStep(0); }, style: { display:"flex", alignItems:"center", gap:12, cursor:"pointer" },}
-          , React.createElement(DHMonogram, { size: 38,} )
+          , React.createElement(DHMonogram, { size: 48,} )
           , React.createElement('div', null
             , React.createElement('div', { style: { color:C.gold, fontFamily:"Playfair Display,serif", fontSize:16, fontWeight:700 },}, "Dignity House" )
             , React.createElement('div', { style: { color:C.muted, fontSize:11, letterSpacing:1 },}, "RESIDENT ONBOARDING" )
@@ -1961,7 +1970,7 @@ function OwnerPortal({ submissions, authed, password, setPassword, onAuth, onBac
               , React.createElement('div', { style: { display:"flex", gap:10, marginTop:12 },}
                 , React.createElement('button', { style: { background:"transparent", border:`1px solid ${C.goldLight}`, borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:C.muted, cursor:"pointer" },}, "View Documents" )
                 , React.createElement('button', { style: { background:"transparent", border:`1px solid ${C.goldLight}`, borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:C.muted, cursor:"pointer" },}, "Download PDF" )
-                , sub.status==="completed"&&React.createElement('button', { style: { background:"transparent", border:"1px solid #2d6a4f", borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:"#2d6a4f", cursor:"pointer" },}, "Countersign")
+                , React.createElement('button', { onClick: ()=>toggleStatus(sub.id), style: { background:"transparent", border:`1px solid ${sub.status==="completed"?"#2d6a4f":"#f4a261"}`, borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:sub.status==="completed"?"#2d6a4f":"#8b4513", cursor:"pointer" },}, sub.status==="completed"?"✓ Countersigned":"Mark Complete")
               )
             )
           ))
