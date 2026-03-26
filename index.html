@@ -1027,7 +1027,7 @@ function App() {
     fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`)
       .then(r=>r.text()).then(text=>{
         const json=JSON.parse(text.replace(/^[^{]*/,"").replace(/[^}]*$/,""));
-        const rows=json.table.rows.map((row,i)=>({
+        const rows=(json.table.rows||[]).filter(row=>row.c[1]?.v).map((row,i)=>({
           id:row.c[0]?.v||`r${i}`, name:row.c[1]?.v||"", date:row.c[2]?.v||"",
           status:row.c[3]?.v||"in_progress", docsCompleted:Number(row.c[4]?.v)||0,
           docsTotal:Number(row.c[5]?.v)||12, email:row.c[6]?.v||"",
