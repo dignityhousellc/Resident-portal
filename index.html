@@ -1024,7 +1024,7 @@ function App() {
   useEffect(() => {
     const cached = localStorage.getItem("dh_submissions");
     if (cached) { try { setSubmissions(JSON.parse(cached)); } catch(e) {} }
-    fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`)
+    fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1&headers=1`)
       .then(r=>r.text()).then(text=>{
         const json=JSON.parse(text.replace(/^[^{]*/,"").replace(/[^}]*$/,""));
         const rows=(json.table.rows||[]).filter(row=>row.c[1]?.v).map((row,i)=>({
