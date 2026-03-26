@@ -1045,7 +1045,12 @@ function App() {
     });
   };
 
-  const DOCUMENTS = getDocuments(includeLease, includePG);
+  const deleteSubmission = (id, name) => {
+    if (!window.confirm(`Delete submission for ${name}? This cannot be undone.`)) return;
+    const updated = submissions.filter(s => s.id !== id);
+    setSubmissions(updated);
+    localStorage.setItem("dh_submissions", JSON.stringify(updated));
+  }; = getDocuments(includeLease, includePG);
   const updateInfo = (k,v) => setClientInfo(p=>({...p,[k]:v}));
   const setSig = (k,v) => setSigsState(p=>({...p,[k]:v}));
   const setInit = (k,v) => setInitsState(p=>({...p,[k]:v}));
@@ -1982,7 +1987,8 @@ function OwnerPortal({ submissions, authed, password, setPassword, onAuth, onBac
               , React.createElement('div', { style: { display:"flex", gap:10, marginTop:12 },}
                 , React.createElement('button', { style: { background:"transparent", border:`1px solid ${C.goldLight}`, borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:C.muted, cursor:"pointer" },}, "View Documents" )
                 , React.createElement('button', { style: { background:"transparent", border:`1px solid ${C.goldLight}`, borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:C.muted, cursor:"pointer" },}, "Download PDF" )
-                , React.createElement('button', { onClick: ()=>toggleStatus(sub.id), style: { background:"transparent", border:`1px solid ${sub.status==="completed"?"#2d6a4f":"#f4a261"}`, borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:sub.status==="completed"?"#2d6a4f":"#8b4513", cursor:"pointer" },}, sub.status==="completed"?"✓ Countersigned":"Mark Complete")
+                , React.createElement('button', { onClick: ()=>toggleStatus(sub.id), style: { background:"transparent", border:`1px solid ${sub.status==="completed"?"#2d6a4f":"#f4a261"}`, borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:sub.status==="completed"?"#2d6a4f":"#8b4513", cursor:"pointer" },} , sub.status==="completed"?"✓ Countersigned":"Mark Complete")
+, React.createElement('button', { onClick: ()=>deleteSubmission(sub.id, sub.name), style: { background:"transparent", border:"1px solid #e07070", borderRadius:4, padding:"6px 14px", fontFamily:"Crimson Text,serif", fontSize:12, color:"#c0392b", cursor:"pointer" },}, "Delete")
               )
             )
           ))
