@@ -1045,10 +1045,15 @@ function App() {
     });
   };
 
-  const deleteSubmission = (id, name) => {
+ const deleteSubmission = (id, name) => {
     const updated = submissions.filter(s => s.id !== id);
     setSubmissions(updated);
     localStorage.setItem("dh_submissions", JSON.stringify(updated));
+    fetch("https://hook.us2.make.com/sw3ec5l1km7crfq6xebp5ftyus5bjg1o", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({id: id})
+    }).catch(e=>console.error("Delete webhook failed:", e));
   };
   const DOCUMENTS = getDocuments(includeLease, includePG);
   const updateInfo = (k,v) => setClientInfo(p=>({...p,[k]:v}));
