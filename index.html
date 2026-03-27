@@ -1050,7 +1050,8 @@ function App() {
     const updated = submissions.filter(s => s.id !== id);
     setSubmissions(updated);
     localStorage.setItem("dh_submissions", JSON.stringify(updated));
-  }; = getDocuments(includeLease, includePG);
+  };
+  const DOCUMENTS = getDocuments(includeLease, includePG);
   const updateInfo = (k,v) => setClientInfo(p=>({...p,[k]:v}));
   const setSig = (k,v) => setSigsState(p=>({...p,[k]:v}));
   const setInit = (k,v) => setInitsState(p=>({...p,[k]:v}));
