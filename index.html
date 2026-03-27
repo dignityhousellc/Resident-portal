@@ -1063,7 +1063,7 @@ function App() {
     if (urlFirst || urlLast) { setTimeout(()=>{ setView("client"); setStep(1); }, 0); }
     return React.createElement(Landing, { onClient: ()=>setView("client"), onOwner: ()=>setView("owner"),} );
   }
-  if (view==="owner") return React.createElement(OwnerPortal, { submissions: submissions, authed: ownerAuthed, password: ownerPassword, setPassword: setOwnerPassword, onAuth: ()=>setOwnerAuthed(ownerPassword==="dignity2026"), onBack: ()=>setView("landing"), onLaunchResident: ({rate, mealRate, lease, pg, secDeposit, unitNumber, address, moveInDate})=>{ setClientInfo(p=>({...p, monthlyRate:rate, mealRate:mealRate||"175", communityFee:"300", secDeposit, unitNumber, address, moveInDate})); setIncludeLease(lease); setIncludePG(pg||false); setStep(1); setView("client"); },} );
+  if (view==="owner") return React.createElement(OwnerPortal, { submissions: submissions, authed: ownerAuthed, password: ownerPassword, setPassword: setOwnerPassword, onAuth: ()=>setOwnerAuthed(ownerPassword==="dignity2026"), onBack: ()=>setView("landing"), toggleStatus: toggleStatus, deleteSubmission: deleteSubmission, onLaunchResident: ({rate, mealRate, lease, pg, secDeposit, unitNumber, address, moveInDate})=>{ setClientInfo(p=>({...p, monthlyRate:rate, mealRate:mealRate||"175", communityFee:"300", secDeposit, unitNumber, address, moveInDate})); setIncludeLease(lease); setIncludePG(pg||false); setStep(1); setView("client"); },} );
 
   return (
     React.createElement('div', { style: { minHeight:"100vh", background:"#f5f0e8", fontFamily:"Crimson Text,serif" },}
@@ -1895,7 +1895,8 @@ function InviteForm({ onLaunch }) {
 }
 
 // ── Owner Portal ──────────────────────────────────────────────────────────────
-function OwnerPortal({ submissions, authed, password, setPassword, onAuth, onBack, onLaunchResident }) {
+
+function OwnerPortal({ submissions, authed, password, setPassword, onAuth, onBack, onLaunchResident, toggleStatus, deleteSubmission }) {
   const [showPw, setShowPw] = useState(false);
   if (!authed) {
     return (
