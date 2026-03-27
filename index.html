@@ -1046,7 +1046,6 @@ function App() {
   };
 
   const deleteSubmission = (id, name) => {
-    if (!window.confirm("Delete " + name + "? This cannot be undone.")) return;
     const updated = submissions.filter(s => s.id !== id);
     setSubmissions(updated);
     localStorage.setItem("dh_submissions", JSON.stringify(updated));
